@@ -34,6 +34,9 @@ ProfitBar = instance_create(457,300,oProfitBar)
 ProfitBar.MinX = 405
 ProfitBar.MaxX = 601 //197 +506
 
+//CREATE NEWS
+instance_create(0,0,oNews)
+
 //CREATE BUTTONS - DATA TYPE TRUE IS WAGES/FALSE IS COST
 Button0 = instance_create(40,155,oButton)
 Button0.DataType = true
@@ -290,3 +293,63 @@ alarm[0] = room_speed*3
 
 #define oData_Staff_Leave_Arrive_Alarm
 alarm[1] = room_speed
+#define oNews_Create
+NewsBarActive = false
+StoryNewsBarActive = false
+TickerPace = 100/room_speed
+
+xx = 500
+xxx = 500
+
+alarm[0] = room_speed*2
+
+NewsItems = ds_list_create()
+STORYNewsItems = ds_list_create()
+
+ds_list_add(NewsItems, "Jam detected", "ohhhh boy jam", "this is jam", "etc etc etc")
+ds_list_add(STORYNewsItems, "COR THIS IS VITAL", "MAN OH MAN OH MAN", "HOOOOOO BOOYYYY", "etc etc etc")
+
+#define oNews_Step
+if NewsBarActive = true
+{
+xx = xx-TickerPace
+}
+
+if StoryNewsBarActive = true
+{
+xxx = xxx-TickerPace
+}
+
+#define oNews_Draw
+if NewsBarActive = true
+{
+draw_text(xx,300,NewsToDraw)
+}
+
+if StoryNewsBarActive = true
+{
+draw_text(xxx,300,StoryNewsToDraw)
+}
+
+#define oNews_Alarm0
+NewsToDraw = ds_list_find_value(NewsItems, 0)
+ds_list_delete(NewsItems, 0)
+var i = string_width(NewsToDraw);
+
+xx = 500
+NewsBarActive = true
+StoryNewsBarActive = false
+
+alarm[0] = i*TickerPace
+
+#define oNews_Alarm1
+StoryNewsToDraw = ds_list_find_value(STORYNewsItems, 0)
+ds_list_delete(STORYNewsItems, 0)
+
+var i = string_width(StoryNewsToDraw);
+
+xxx = 500
+NewsBarActive = false
+StoryNewsBarActive = true
+
+alarm[0] = i*TickerPace

@@ -29,6 +29,7 @@
     <object>objects\oProfitBar</object>
     <object>objects\oButton</object>
     <object>objects\oPointer</object>
+    <object>objects\oNews</object>
   </objects>
   <rooms name="rooms">
     <room>rooms\room0</room>

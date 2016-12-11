@@ -24,43 +24,43 @@ background_index[2] = background2
 background_index[3] = background3
 
 //ADD OVERLAY PROFIT THING
-tile_add(ProfitOverlay,0,0,640,360,0,0,-1000)
+tile_add(ProfitOverlay,0,0,1280,720,0,0,-1000)
 
 //CREATE POINTER
 instance_create(0,0,oPointer)
 
 //CREATE PROFIT BAR
-ProfitBar = instance_create(457,300,oProfitBar)
-ProfitBar.MinX = 405
-ProfitBar.MaxX = 601 //197 +506
+ProfitBar = instance_create(750,21,oProfitBar)
+ProfitBar.MinX = 697
+ProfitBar.MaxX = 1247
 
 //CREATE NEWS
 instance_create(0,0,oNews)
 
 //CREATE BUTTONS - DATA TYPE TRUE IS WAGES/FALSE IS COST
-Button0 = instance_create(40,155,oButton)
+Button0 = instance_create(105,152,oButton)
 Button0.DataType = true
 Button0.Positive = true
 Button0.IndexBase = 3
 
-Button1 = instance_create(94,155,oButton)
+Button1 = instance_create(208,152,oButton)
 Button1.DataType = true
 Button1.Positive = false
 Button1.IndexBase = 0
 
-Button2 = instance_create(192,155,oButton)
+Button2 = instance_create(379,152,oButton)
 Button2.DataType = false
 Button2.Positive = true
 Button2.IndexBase = 3
 
-Button3 = instance_create(246,155,oButton)
+Button3 = instance_create(480,152,oButton)
 Button3.DataType = false
 Button3.Positive = false
 Button3.IndexBase = 0
 
 #define oData_Draw
-draw_text(82,109,Wages)
-draw_text(234,109,Price)
+draw_text(187,81,Wages)
+draw_text(452,79,Price)
 
 draw_text(room_width/2,room_height/2,NetProfit)
 
@@ -150,7 +150,7 @@ if Price < 0 {Price = 0}
 
 #define oProfitBar_Step
 
-TargetX = oData.NetProfit/7 + 405
+TargetX = oData.NetProfit/3.5 + 697
 if TargetX < MinX {TargetX = MinX}
 if TargetX > MaxX {TargetX = MaxX}
 
@@ -323,12 +323,12 @@ xxx = xxx-TickerPace
 #define oNews_Draw
 if NewsBarActive = true
 {
-draw_text(xx,300,NewsToDraw)
+draw_text(xx,682,NewsToDraw)
 }
 
 if StoryNewsBarActive = true
 {
-draw_text(xxx,300,StoryNewsToDraw)
+draw_text(xxx,682,StoryNewsToDraw)
 }
 
 #define oNews_Alarm0

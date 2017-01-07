@@ -13,7 +13,7 @@ alarm[0] = room_speed
 alarm[1] = room_speed
 
 draw_set_font(font0)
-draw_set_halign(fa_center)
+draw_set_halign(fa_left)
 draw_set_valign(fa_center)
 
 CurrentBackground = 3
@@ -62,7 +62,7 @@ Button3.IndexBase = 0
 draw_text(187,81,Wages)
 draw_text(452,79,Price)
 
-draw_text(room_width/2,room_height/2,NetProfit)
+draw_text(room_width/2,room_height/2,Staff)
 
 
 #define oData_Step
@@ -110,6 +110,18 @@ if Wages > 7
     {
     HappyStaffModifier = Wages - 7
     }
+    else
+    {
+    HappyStaffModifier = -1
+    PissedOffStaffModifier = -2
+    }
+}
+
+//NO PROFITS, STAFF SHOULD LEAVE
+if NetProfit < 456
+{
+
+PissedOffStaffModifier = PissedOffStaffModifier*2
 }
 
 LessCheapStaff = LessCheapStaff + (HappyStaffModifier/room_speed)*2.5
@@ -125,8 +137,8 @@ if CheapStaff <40 {CheapStaff = 40}
     {
     if CheapStaff <5 {CheapStaff = 5}
     }
+    
 if CheapStaff >70 {CheapStaff = 70}
-
 if LessCheapStaff > 30 {LessCheapStaff = 30}
 if LessCheapStaff < 0 {LessCheapStaff = 0}
 
@@ -141,7 +153,7 @@ Incoming = (oData.UnitsProduced*oData.Price)*JamDemand
 UnitCosts = (35/oData.UnitsProduced)*oData.UnitsProduced
 StaffCosts = Wages*(CheapStaff/1.8) + Wages*(LessCheapStaff*1.2)
 
-NetProfit = Incoming - UnitCosts - StaffCosts
+NetProfit = (Incoming - UnitCosts - StaffCosts) *oNews.NewsImpactMultiplier
 
 if NetProfit < 0 {NetProfit = 0}
 if Wages < 5.55 {Wages = 5.55}
@@ -294,62 +306,53 @@ alarm[0] = room_speed*3
 #define oData_Staff_Leave_Arrive_Alarm
 alarm[1] = room_speed
 #define oNews_Create
-NewsBarActive = false
-StoryNewsBarActive = false
-TickerPace = 100/room_speed
-
-xx = 500
-xxx = 500
+NewsImpactMultiplier = 1
+global.TickerPace = 60/room_speed
 
 alarm[0] = room_speed*2
 
 NewsItems = ds_list_create()
-STORYNewsItems = ds_list_create()
 
-ds_list_add(NewsItems, "Jam detected", "ohhhh boy jam", "this is jam", "etc etc etc")
-ds_list_add(STORYNewsItems, "COR THIS IS VITAL", "MAN OH MAN OH MAN", "HOOOOOO BOOYYYY", "etc etc etc")
-
-#define oNews_Step
-if NewsBarActive = true
-{
-xx = xx-TickerPace
-}
-
-if StoryNewsBarActive = true
-{
-xxx = xxx-TickerPace
-}
-
-#define oNews_Draw
-if NewsBarActive = true
-{
-draw_text(xx,682,NewsToDraw)
-}
-
-if StoryNewsBarActive = true
-{
-draw_text(xxx,682,StoryNewsToDraw)
-}
+//0 = Negative, 1 = N/A, 2 = Positive
+ds_list_add(NewsItems, 
+"CRISP ADVERT MAN CRUCIFIED LIVE ON TV",1,
+chr(34) + "TREACLE IS TREASON" +chr(34) +": NEW CAMPAIGN SEES BOOST IN JAM SALES",1.8,
+"CONSERVATIVE PARTY OFFICIALLY REBRANDS AS" + chr(34) + "CONSERVES" + chr(34),1.1,
+"OPENLY CHEERFUL SWORD-FIGHTING JUDGES BLOCK JAM INDUSTRY EXPANSION PLANS",0.7,
+"HEATHROW'S THIRD RUNWAY TO BE" + chr(34) + "SUPPORTED BY JAM" + chr(34),1,
+chr(34)+ "FOREIGNERS BAD, JAM GOOD" + chr(34) +  "REPORT ALT-EXPERTS",1.2,
+"QUEEN PHOTOGRAPHED WITH A LOVELY SCONE",1.7,
+"BRITISH STRAWBERRY CROPS STRUCK BY FOUL WEATHER: JAM INDUSTRY TRIPLES SUGAR, SWITCHES TO KALE",0.5,
+"SCIENTISTS SUGGEST JAM ATTRACTS WASPS",0.3,
+"TABLOID LAUNCHES PRO-WASP CAMPAIGN: JAM DEMANDS SOAR",1.6,
+"EXPOSE SUGGESTS PROMINENT MP" +chr(34) + "PERFORMED SEX ACT W. BARREL OF RASPBERRIES" + chr(34),0.7,
+"MEDIA REACTS TO FRUITGATE:" +chr(34) +"IT'S JAM-BANTER FOR BOYS" +chr(34),1,
+"CELEBRITIES LAUNCH SOLIDARITY HASHTAG #IFFRUIT2, POST PHOTOS FORNICATING WITH FRUIT-BASED PRODUCTS",1.6,
+"HEALTH EXPERTS WARN OF" + chr(34) + "GONAD-IABETES" + chr(34) +", ADVISE AGAINST JAM FORNICATION",1.4,
+"CONSUMERS BUY FRUIT SPREADS TO THROW AT HEALTH EXPERTS",1.5,
+chr(34) +"SUGAR IS A MYTH" + chr(34) +", MEP REVEALS",1.7,
+"FOREIGN WORKERS FOUND DROWNED IN JAM. NATION OUTRAGED BY SENSELESS LOSS OF JAM",1.4,
+"REMOANERS PROMISE GLOOMY PROSPECTS: JAM INDUSTRY COMMITS TO TURN GLOOM INTO JAM",1.3,
+"EXPORT COSTS SOAR." + chr(34) + "UK FED UP WITH SO-CALLED EXPORTS" + chr(34) + "MEP ASSURES",0.6,
+"FOREIGNS FINALLY" + chr(34) + "LEAVE" + chr(34) + "LIKE WE VOTED FOR. NEW BRITISH JAMJOBS FOR BRITISH JAMPEOPLE",0.7,
+"MEP DECLARES" + chr(34) + "TRAVEL IS TREASON" + chr(34) +", DEMANDS PLANES/BOATS BE REPLACED WITH" + chr(34) + "BUTLINS" + chr(34),1,
+"WEIRDO MURDERS ANTI-JAM POLITICIAN FOR PROBABLY NO REASON",1.2,
+"UK PREPARES TO LEAVE EU. PM CONFIDENT THAT CHINA WILL LIKE JAM",1,
+"VILE CAMPAIGNERS SPREAD FEAR INSTEAD OF LOVELY JAM:" + chr(34) +"UK HAS NO DEALS, NO PLAN" + chr(34),0.6
+)
 
 #define oNews_Alarm0
-NewsToDraw = ds_list_find_value(NewsItems, 0)
+//GET NEWS FROM LIST
+var NewsToDraw = ds_list_find_value(NewsItems, 0)
+NewsImpactMultiplier = ds_list_find_value(NewsItems, 1)
+//DELETE ENTRY FROM LIST
 ds_list_delete(NewsItems, 0)
+//NOW DELETE THE NEXT ENTRY, i.e THE DATA MULTIPLIER!
+ds_list_delete(NewsItems, 0)
+//IDENTIFY LENGTH OF NEWS ITEM TO TRIGGER NEXT NEWS ITEM
 var i = string_width(NewsToDraw);
+alarm[0] = i+350
 
-xx = 500
-NewsBarActive = true
-StoryNewsBarActive = false
-
-alarm[0] = i*TickerPace
-
-#define oNews_Alarm1
-StoryNewsToDraw = ds_list_find_value(STORYNewsItems, 0)
-ds_list_delete(STORYNewsItems, 0)
-
-var i = string_width(StoryNewsToDraw);
-
-xxx = 500
-NewsBarActive = false
-StoryNewsBarActive = true
-
-alarm[0] = i*TickerPace
+NewsUpdate = instance_create(1300,682,oNewsUpdate)
+NewsUpdate.SpriteNumber = round(random_range(0,6))
+NewsUpdate.NewsToDraw = NewsToDraw

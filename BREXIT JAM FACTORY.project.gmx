@@ -9,6 +9,7 @@
     <sprite>sprites\sPROFIT</sprite>
     <sprite>sprites\sButton</sprite>
     <sprite>sprites\sInvisiblePointer</sprite>
+    <sprite>sprites\sBREAKING</sprite>
   </sprites>
   <backgrounds name="background">
     <background>background\background0</background>
@@ -30,6 +31,7 @@
     <object>objects\oButton</object>
     <object>objects\oPointer</object>
     <object>objects\oNews</object>
+    <object>objects\oNewsUpdate</object>
   </objects>
   <rooms name="rooms">
     <room>rooms\room0</room>
